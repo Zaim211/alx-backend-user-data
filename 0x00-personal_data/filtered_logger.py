@@ -4,7 +4,6 @@ from typing import List
 import re
 import logging
 
-# Personally identifiable information (PII)
 PII_FIELDS = ('name', 'eamil', 'phone', 'ssn', 'password')
 
 

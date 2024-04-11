@@ -76,7 +76,7 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
 
 def main():
     """
-    main entry point
+    main Function should run when the module is executed
     """
     db = get_db()
     logger = get_logger()

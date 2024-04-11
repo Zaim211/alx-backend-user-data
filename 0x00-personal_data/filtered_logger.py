@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-""" Regex-ing """
+""" Module for handling Personal Data """
 from typing import List
 import re
 import logging
+
+#Personally identifiable information (PII)
+PII_FIELDS = ('name', 'eamil', 'phone', 'ssn', 'last_login')
 
 
 def filter_datum(fields: List[str], redaction: str,
@@ -33,3 +36,15 @@ class RedactingFormatter(logging.Formatter):
         red = filter_datum(self.fields, self.REDACTION,
                            message, self.SEPARATOR)
         return red
+
+
+def get_logger() -> logging.Logger:
+    """ Function that takes no arguments and returns
+    a logging.Logger object """
+    logger = logging.getLogger('user_data')
+    logger.setLevel(loggin.INFO)
+    handler = loggin.StreamHandler()
+    formatter = RedactingFormatter(PII_FIELDS)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger

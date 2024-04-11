@@ -41,14 +41,21 @@ class RedactingFormatter(logging.Formatter):
 def get_logger() -> logging.Logger:
     """ Function that takes no arguments and returns
     a logging.Logger object """
-    logger = logging.getLogger("user_data")
+    # Create logger
+    logger = logging.getLogger('user_data')
+
+    # Set level
     logger.setLevel(logging.INFO)
     logger.propagate = False
 
-    handler = logging.StreamHandler()
+    # Create stream handler
+    stream_handler = logging.StreamHandler()
 
-    formatter = RedactingFormatter(PII_FIELDS)
+    # Set formatter as RedactingFormatter
+    stream_handler.setFormatter(RedactingFormatter(list(PII_FIELDS)))
 
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    # Add the handler to logger
+    logger.addHandler(stream_handler)
+
+    # Return logger
     return logger

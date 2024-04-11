@@ -70,7 +70,7 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     con = mysql.connector.connect(user=user,
                                   password=pssd,
                                   host=host,
-                                  database=db_name)
+                                  db_name=db_name)
     return con
 
 

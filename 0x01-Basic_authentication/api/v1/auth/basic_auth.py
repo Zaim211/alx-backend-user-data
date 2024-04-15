@@ -21,7 +21,9 @@ class BasicAuth(Auth):
         basic_auth = authorization_header.split(" ")[-1]
         return basic_auth
 
-    def decode_base64_authorization_header(self, base64_authorization_header: str) -> str:
+    def decode_base64_authorization_header(
+            self, base64_authorization_header: str
+            ) -> str:
         """ Method that returns the decoded value of a
         Base64 string base64_authorization_header
         """

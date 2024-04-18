@@ -2,7 +2,7 @@
 """ Module for SessionAuth """
 from .auth import Auth
 from uuid import uuid4
-from models.user import User
+# from models.user import User
 
 
 class SessionAuth(Auth):
@@ -27,4 +27,4 @@ class SessionAuth(Auth):
             return None
         if not isinstance(session_id, str):
             return None
-        return self.user_id_for_session_id.get(session_id)
+        return self.user_id_by_session_id.get(session_id)

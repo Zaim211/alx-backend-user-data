@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """ Module for Sessions in database """
 from .session_exp_auth import SessionExpAuth
-from datetime import datetime, timedelta
 from models.user_session import UserSession
 
 
@@ -13,7 +12,13 @@ class SessionDBAuth(SessionExpAuth):
         of UserSession and returns the Session ID
         """
         session_id = super().create_session(user_id)
-        user = UserSession(session_id: session_id, user_id: user_id)
+        if not session_id:
+            return None
+        userSession = {
+            "user_id": user_id,
+            "session_id": session_id,
+        }
+        user = UserSession(**userSession)
         user.save()
         return session_id
 
@@ -21,10 +26,10 @@ class SessionDBAuth(SessionExpAuth):
         """ Method that returns the User ID by requesting
         UserSession in the database based on session_id
         """
-        try:
-            user_id = UserSession.search({'session_id': session_id})
-        except ValueError:
-            return None
+        user_id = UserSession.search({"session_id": session_id})
+        if user_id:
+            return user_id
+        return None
 
     def destroy_session(self, request=None):
         """ Method destroys the UserSession based on

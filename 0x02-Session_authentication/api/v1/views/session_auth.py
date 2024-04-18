@@ -38,5 +38,5 @@ def create_logout():
     """
     from api.v1.app import auth
     if auth.destroy_session(request):
-        return jsonify({"status": "success"}), 200
+        return jsonify({}), 200
     abort(404)

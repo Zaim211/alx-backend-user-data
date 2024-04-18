@@ -2,6 +2,7 @@
 """ Expiration date to a Session ID """
 from .session_auth import SessionAuth
 import os
+from datetime import datetime, timedelta
 
 
 class SessionExpAuth(SessionAuth):
@@ -35,9 +36,9 @@ class SessionExpAuth(SessionAuth):
         user_session_id = self.user_id_by_session_id.get(session_id)
         if user_session_id is None:
             return None
-        if self.session_id <= 0:
+        if self.session_duration <= 0:
             return user_session_id.get('user_id')
-        if "created_at" not in user_session_id.key():
+        if "created_at" not in user_session_id.keys():
             return None
         created_at = user_session_id.get('created_at')
         expire_time = timedelta(seconds=self.session_duration)

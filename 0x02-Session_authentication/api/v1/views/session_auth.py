@@ -24,10 +24,10 @@ def create_login():
     for usr in user:
         if usr.is_valid_password(password):
             from api.v1.app import auth
-            session_user_id = auth.create_session(usr.id)
+            session_id = auth.create_session(usr.id)
             response = jsonify(usr.to_json())
             cookie = os.getenv('SESSION_NAME')
-            response.set_cookie(cookie, session_user_id)
+            response.set_cookie(cookie, session_id)
             return response
     return jsonify({"error": "wrong password"}), 401
 

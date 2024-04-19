@@ -59,5 +59,5 @@ class SessionDBAuth(SessionExpAuth):
             return False
 
         user = UserSession.search({'session_id': session_id})[0]
-        user_session.remove()
+        user.remove()
         return True

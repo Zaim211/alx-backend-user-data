@@ -3,6 +3,7 @@
 from .session_exp_auth import SessionExpAuth
 from datetime import datetime, timedelta
 from models.user_session import UserSession
+import uuid
 
 
 class SessionDBAuth(SessionExpAuth):
@@ -13,7 +14,13 @@ class SessionDBAuth(SessionExpAuth):
         of UserSession and returns the Session ID
         """
         session_id = super().create_session(user_id)
-        user = UserSession(session_id=session_id, user_id=user_id)
+        if not session_id:
+            return None
+        kw = {
+            "user_id": user_id,
+            "session_id": session_id
+        }
+        user = UserSession(**kw)
         user.save()
         return session_id
 
@@ -27,13 +34,13 @@ class SessionDBAuth(SessionExpAuth):
             return None
 
         if self.session_duration <= 0:
-            return user_session.user_id
+            return user.user_id
 
         if not isinstance(user.created_at, datetime):
             return None
 
-        time_experation = timedelta(seconds=self.session_duration)
-        if datetime.utcnow() > user.created_at + time_experation:
+        exp_time = timedelta(seconds=self.session_duration)
+        if datetime.utcnow() > user.created_at + exp_time:
             return None
         return user.user_id
 
@@ -43,12 +50,14 @@ class SessionDBAuth(SessionExpAuth):
         """
         if not request:
             return False
+
         session_id = self.session_cookie(request)
         if not session_id:
             return False
+
         if not self.user_id_for_session_id(session_id):
             return False
 
         user = UserSession.search({'session_id': session_id})[0]
-        user.remove()
+        user_session.remove()
         return True

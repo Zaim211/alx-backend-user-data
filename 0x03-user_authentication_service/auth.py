@@ -51,6 +51,18 @@ class Auth:
         self._db.update_user(user.id, session_id=session_id)
         return session_id
 
+    def get_user_from_session_id(self, session_id: str) -> Union[None, str]:
+        """ Method that takes a single session_id string argument and
+        returns the corresponding User or None
+        """
+        try:
+            user = self._db.find_user_by(sssion_id=session_id)
+        except NoResultFound:
+            return None
+        return user
+
+        if session_idis None:
+            return None
 
 
 def _hash_password(password: str) -> bytes:

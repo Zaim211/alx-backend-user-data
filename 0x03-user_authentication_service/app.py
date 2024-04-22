@@ -31,20 +31,29 @@ def login():
 
     if not AUTH.valid_login(email, password):
         abort(401)
-    new_session_id = AUTH.create_session(email)
+    session_id = AUTH.create_session(email)
     response = jsonify({"email": f"{email}", "message": "logged in"})
-    response.set_cookie("session_id", new_session_id)
+    response.set_cookie("session_id", session_id)
     return response
 
-@app.route('sessions', methods=["DELETE"], strict_slashes=False)
+@app.route('/sessions', methods=["DELETE"], strict_slashes=False)
 def logout():
     """ Logout the users """
-    session_id = request.cookies.get("session_id")
+    session_id = request.cookies.get("session_id", None)
     user = AUTH.get_user_from_session_id(session_id)
     if session_id is None or user is None:
         abort(403)
     AUTH.destroy_session(user.id)
     return redirect('/')
+
+@app.route('/profile', methods=["GET"], strict_slashes=False)
+def profile():
+    """ find the user """
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+    if user:
+        return jsonify({"email": f"{user.email}"}), 200
+    abort(403)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")

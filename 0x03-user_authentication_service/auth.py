@@ -6,16 +6,6 @@ from user import User
 from sqlalchemy.orm.exc import NoResultFound
 
 
-def _hash_password(password: str) -> bytes:
-    """ Method  that takes in a password string arguments
-    and returns bytes.
-    The returned bytes is a salted hash of the input password,
-    hashed with bcrypt.hashpw
-    """
-    pwd = password.encode('utf-8')
-    return bcrypt.hashpw(pwd, bcrypt.gensalt())
-
-
 class Auth:
     """Auth class to interact with the authentication database.
     """
@@ -32,3 +22,13 @@ class Auth:
             user = self._db.add_user(email, hashed_pwd)
             return user
         raise ValueError(f'User {email} already exists')
+
+
+def _hash_password(password: str) -> bytes:
+    """ Method  that takes in a password string arguments
+    and returns bytes.
+    The returned bytes is a salted hash of the input password,
+    hashed with bcrypt.hashpw
+    """
+    pwd = password.encode('utf-8')
+    return bcrypt.hashpw(pwd, bcrypt.gensalt())

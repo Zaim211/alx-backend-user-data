@@ -70,13 +70,14 @@ class Auth:
         """ Method that takes a single session_id string argument and
         returns the corresponding User or None
         """
+        if session_id is None:
+            return None
+
         try:
             user = self._db.find_user_by(session_id=session_id)
         except NoResultFound:
             return None
         return user
-        if session_id is None:
-            return None
 
     def destroy_session(self, user_id: int) -> None:
         """ Method that takes a single user_id integer argument

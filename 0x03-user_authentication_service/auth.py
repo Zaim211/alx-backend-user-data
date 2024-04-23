@@ -102,8 +102,9 @@ class Auth:
     def update_password(self, reset_token: str, password: str) -> None:
         """ Method that update the password with token """
         try:
-            user = self._db.find_user_by(reset_token)
+            user = self._db.find_user_by(reset_token=reset_token)
         except NoresultFound:
             raise ValueError
-        user_pwd = _hashed_password(password)
-        self._db.update_user(user.id, hashed_password=user_pwd, reset_token=None)
+        user_pwd = _hash_password(password)
+        self._db.update_user(user.id, hashed_password=user_pwd,
+                             reset_token=None)

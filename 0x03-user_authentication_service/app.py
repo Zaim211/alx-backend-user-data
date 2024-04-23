@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """ Flask app """
-from flask import Flask, jsonify, request, abort, redirect
+from flask import (Flask, jsonify, request, abort,
+                   redirect, make_response)
 from auth import Auth
 
 app = Flask(__name__)
+
 AUTH = Auth()
 
 
@@ -56,9 +58,10 @@ def profile():
     """ find the user """
     session_id = request.cookies.get("session_id")
     user = AUTH.get_user_from_session_id(session_id)
-    if user:
-        return jsonify({"email": f"{user.email}"}), 200
-    abort(403)
+    if not user:
+        abort(403)
+
+    return make_response(jsonify({"email": user.email}))
 
 
 if __name__ == "__main__":

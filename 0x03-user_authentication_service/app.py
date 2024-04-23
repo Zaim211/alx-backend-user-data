@@ -6,12 +6,14 @@ from auth import Auth
 app = Flask(__name__)
 AUTH = Auth()
 
+
 @app.route('/', methods=["GET"], strict_slashes=False)
 def main() -> str:
     """ Test the route """
     return jsonify({"message": "Bienvenue"})
 
-@app.route('/users', methods=["POST"], strict_slashes=False) 
+
+@app.route('/users', methods=["POST"], strict_slashes=False)
 def users():
     """ new users registration """
     email = request.form.get("email")
@@ -22,6 +24,7 @@ def users():
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
     return jsonify({"email": f"{email}", "message": "user created"})
+
 
 @app.route('/sessions', methods=["POST"], strict_slashes=False)
 def login():
@@ -36,6 +39,7 @@ def login():
     response.set_cookie("session_id", session_id)
     return response
 
+
 @app.route('/sessions', methods=["DELETE"], strict_slashes=False)
 def logout():
     """ Logout the users """
@@ -46,6 +50,7 @@ def logout():
     AUTH.destroy_session(user.id)
     return redirect('/')
 
+
 @app.route('/profile', methods=["GET"], strict_slashes=False)
 def profile():
     """ find the user """
@@ -54,6 +59,7 @@ def profile():
     if user:
         return jsonify({"email": f"{user.email}"}), 200
     abort(403)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")

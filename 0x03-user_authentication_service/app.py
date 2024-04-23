@@ -10,7 +10,7 @@ AUTH = Auth()
 
 
 @app.route('/', methods=["GET"], strict_slashes=False)
-def main() -> str:
+def index():
     """ Test the route """
     return jsonify({"message": "Bienvenue"})
 

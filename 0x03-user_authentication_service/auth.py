@@ -8,6 +8,21 @@ from uuid import uuid4
 from typing import Union
 
 
+def _hash_password(password: str) -> bytes:
+    """ Method  that takes in a password string arguments
+    and returns bytes.
+    The returned bytes is a salted hash of the input password,
+    hashed with bcrypt.hashpw
+    """
+    pwd = password.encode('utf-8')
+    return bcrypt.hashpw(pwd, bcrypt.gensalt())
+
+
+def _generate_uuid() -> str:
+    """ Function that return a string representation of a new UUID """
+    return str(uuid4())
+
+
 class Auth:
     """Auth class to interact with the authentication database.
     """
@@ -72,17 +87,3 @@ class Auth:
         except ValueError:
             return None
         return None
-
-
-def _hash_password(password: str) -> bytes:
-    """ Method  that takes in a password string arguments
-    and returns bytes.
-    The returned bytes is a salted hash of the input password,
-    hashed with bcrypt.hashpw
-    """
-    pwd = password.encode('utf-8')
-    return bcrypt.hashpw(pwd, bcrypt.gensalt())
-
-def _generate_uuid() -> str:
-    """ Function that return a string representation of a new UUID """
-    return str(uuid4())

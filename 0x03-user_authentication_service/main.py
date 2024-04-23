@@ -2,44 +2,49 @@
 """ Start my application - Main file """
 import requests
 
+HOST_URL = "http://127.0.0.1:5000"
+EMAIL = "guillaume@holberton.io"
+PASSWD = "b4l0u"
+NEW_PASSWD = "t4rt1fl3tt3"
+
 
 def register_user(email: str, password: str) -> None:
     """ Test register users """
-    r = requests.post("http://127.0.0.1:5000/users",
-                      data_fields={"email": email, "password": password})
-    if r.status_code == 200:
-        assert(r.json() == {"email": email, "message": "user created"})
-    else:
-        assert(r.status_code == 400)
-        assert(r.json() == {"message": "email already registred"})
+    data = {"email": email, "password": password}
+    response = requests.post(f"{HOST_URL}/users", data=data)
+
+    msg = {"email": email, "message": "user created"}
+
+    assert response.status_code == 200
+    assert response.json() == msg
 
 
 def log_in_wrong_password(email: str, password: str) -> None:
     """ Test validation password """
-    r = requests.post("http://127.0.0.1:5000/sessions",
-                      data_fields={"email": email, "password": password})
-    assert(r.status_code == 401)
+    data = {"email": email, "password": password}
+    response = requests.post(f"{HOST_URL}/sessions", data=data)
+    assert(response.status_code == 401)
 
 
 def log_in(email: str, password: str) -> str:
     """ Test Login users """
-    r = requests.post("http://127.0.0.1:5000/sessions",
-                      data_fields={"email": email, "password": password})
-    assert(r.status_code == 200)
-    assert(r.json() == {"email": email, "message": "logged in"})
-    return r.cookies["session_id"]
+    data = {"email": email, "password": password}
+    response = requests.post(f"{HOST_URL}/sessions", data=data)
+    assert(response.status_code == 200)
+    assert(response.json() == {"email": email, "message": "logged in"})
+    return response.cookies["session_id"]
 
 
 def profile_unlogged() -> None:
     """ for profile without being logged in with session_id """
-    response = requests.get("http://127.0.0.1:5000/profile")
+    response = requests.get(f"{HOST_URL}/profile")
     return (response.status_code == 403)
 
 
 def profile_logged(session_id: str) -> None:
     """ Test for log in with the given correct email and password """
     cookies = {'session_id': session_id}
-    response = requests.get('http://127.0.0.1:5000/profile',
+    response = requests.get(f'{HOST_URL}/profile',
                             cookies=cookies)
     assert(response.status_code == 200)
 
@@ -47,18 +52,19 @@ def profile_logged(session_id: str) -> None:
 def log_out(session_id: str) -> None:
     """ Test logout using session_id """
     cookies = {'session_id': session_id}
-    response = requests.delete('http://127.0.0.1:5000/sessions',
+    response = requests.delete(f'{HOST_URL}/sessions',
                                cookies=cookies)
     if response.status_code == 302:
-        assert(response.url == 'http://127.0.0.1:5000/')
+        assert(response.url == f'{HOST_URL}')
     else:
         assert(response.status_code == 200)
 
 
 def reset_password_token(email: str) -> str:
     """ Test reset password using token """
-    response = requests.post('http://127.0.0.1:5000/reset_password',
-                             data_fields={'email': email})
+    data = {'email': email}
+    response = requests.post(f'{HOST_URL}/reset_password', data=data)
+
     if response.status_code == 200:
         return response.json()['reset_token']
     assert(response.status_code == 401)
@@ -66,20 +72,15 @@ def reset_password_token(email: str) -> str:
 
 def update_password(email: str, reset_token: str, new_password: str) -> None:
     """ Test update the password """
-    data_fields = {'email': email, 'reset_token': reset_token,
-                   'new_password': new_password}
-    response = requests.put('http://127.0.0.1:5000/reset_password',
-                            data_fields=data_fields)
+    data = {'email': email, 'reset_token': reset_token,
+            'new_password': new_password}
+    response = requests.put(f'{HOST_URL}/reset_password',
+                            data=data)
     if response.status_code == 200:
         assert(response.json() == {"email": email,
                                    "message": "Password updated"})
     else:
         assert(response.status_code == 403)
-
-
-EMAIL = "guillaume@holberton.io"
-PASSWD = "b4l0u"
-NEW_PASSWD = "t4rt1fl3tt3"
 
 
 if __name__ == "__main__":

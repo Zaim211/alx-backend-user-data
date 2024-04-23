@@ -10,13 +10,13 @@ AUTH = Auth()
 
 
 @app.route('/', methods=["GET"], strict_slashes=False)
-def index():
+def index() -> str:
     """ Test the route """
     return jsonify({"message": "Bienvenue"})
 
 
 @app.route('/users', methods=["POST"], strict_slashes=False)
-def users():
+def users() -> str:
     """ new users registration """
     email = request.form.get("email")
     password = request.form.get("password")
@@ -29,7 +29,7 @@ def users():
 
 
 @app.route('/sessions', methods=["POST"], strict_slashes=False)
-def login():
+def login() -> str:
     """ login the users """
     email = request.form.get("email")
     password = request.form.get("password")
@@ -54,10 +54,11 @@ def logout():
 
 
 @app.route('/profile', methods=["GET"], strict_slashes=False)
-def profile():
+def profile() -> str:
     """ find the user """
     session_id = request.cookies.get("session_id")
     user = AUTH.get_user_from_session_id(session_id)
+
     if not user:
         abort(403)
 
